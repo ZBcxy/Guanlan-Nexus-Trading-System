@@ -1,0 +1,64 @@
+name: GNTS CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ============ 基础编译测试 ============
+  build:
+    name: Build (gcc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make
+      - name: Run tests
+        run: make test
+
+  # ============ Sanitizer 构建 ============
+  sanitizers:
+    name: Sanitizers
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sanitizer: [asan, ubsan, tsan]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with ${{ matrix.sanitizer }}
+        run: make ${{ matrix.sanitizer }}
+      - name: Run tests with ${{ matrix.sanitizer }}
+        run: make test-${{ matrix.sanitizer }}
+
+  # ============ 静态分析 ============
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
+      - name: Run cppcheck
+        run: make cppcheck
+
+  # ============ 代码覆盖率 ============
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lcov
+        run: sudo apt-get update && sudo apt-get install -y lcov
+      - name: Build with coverage
+        run: make coverage
+      - name: Run tests for coverage
+        run: make test-coverage
+      - name: Generate coverage report
+        run: make coverage-report
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/

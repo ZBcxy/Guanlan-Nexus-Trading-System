@@ -1,0 +1,58 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.out
+*.exe
+
+# Libraries
+libgnts.a
+libgnts.so
+
+# Test binaries
+tests/test_main
+tests/test_*
+tests/*.o
+
+# CMake
+build/
+cmake-build-*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Code coverage
+*.gcda
+*.gcno
+*.gcov
+lcov/
+coverage/
+coverage_html/
+
+# Doxygen
+docs/html/
+docs/latex/
+
+# Static analysis
+cppcheck-report.txt
+
+# Sanitizer logs
+*.asan.log
+*.tsan.log
+
+# Log files from test runs
+*.log
+
+# Core dumps
+core
+core.*
+
+# Backup files
+*.bak
+*.orig
